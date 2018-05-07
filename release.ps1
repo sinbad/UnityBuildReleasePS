@@ -38,6 +38,11 @@ if ($help) {
     Exit 0
 }
 
+if ($src.Length -eq 0) {
+    $src = "."
+    Write-Verbose "-src not specified, assuming current directory"
+}
+
 # Import config
 . $PSScriptRoot\inc\buildconfig.ps1
 $config = Load-Build-Config -srcfolder:$src

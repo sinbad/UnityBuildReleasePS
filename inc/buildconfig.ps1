@@ -33,11 +33,6 @@ function Load-Build-Config {
         [string]$srcfolder
     )
 
-    if ($srcfolder.Length -eq 0) {
-        $srcfolder = "."
-        Write-Verbose "-src not specified, assuming current directory"
-    }
-
     $configfile = Resolve-Path "$srcfolder\buildconfig.json"
     if (-not (Test-Path $configfile -PathType Leaf)) {
         throw "$srcfolder\buildconfig.json does not exist!"
@@ -45,7 +40,7 @@ function Load-Build-Config {
 
     $obj = (Get-Content $configfile) | ConvertFrom-Json
 
-    $ret = New-Object BuildConfig
+    $ret = [BuildConfig]::New()
     if ([System.IO.Path]::IsPathRooted($obj.BuildDir)) {
         $ret.BuildDir = Resolve-Path $obj.BuildDir
     } else {

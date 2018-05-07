@@ -1,3 +1,5 @@
+. $PSScriptRoot\buildconfig.ps1
+
 # Return build path for version/steam/dev, targets will be subdirs
 function Get-Build-Base-Path {
     param (
