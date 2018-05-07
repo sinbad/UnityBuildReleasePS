@@ -38,7 +38,7 @@ function Build-Targets {
 
     if (-not $dryrun) {
         Write-Output "Setting #defines to $defines"
-        $projfile = ".\ProjectSettings\ProjectSettings.asset"
+        $projfile = "$src\ProjectSettings\ProjectSettings.asset"
         # YAML parser requires CRLF and ProjectSettings.asset is LF because crlf-auto doesn't match
         $settings = Yaml-Load $projfile -convertFromLF $true
         # We can't use Yaml-Save to overwrite this since Unity uses its own YAML
@@ -92,7 +92,9 @@ function Build-Targets {
         }
 
         # Restore project settings
+        Push-Location $src
         git checkout ./ProjectSettings/ProjectSettings.asset
+        Pop-Location
     }
 
 }

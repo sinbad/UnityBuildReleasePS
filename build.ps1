@@ -91,6 +91,7 @@ if ($keepversion -and -not $devonly -and -not $force -and -not $test) {
 
 # Check working copy is clean
 if (-not $test) {
+    if ($src -ne ".") { Push-Location $src }
     git diff --no-patch --exit-code
     if ($LASTEXITCODE -ne 0) {
         Write-Output "Working copy is not clean (unstaged changes)"
@@ -109,6 +110,7 @@ if (-not $test) {
             Exit $LASTEXITCODE
         }
     }
+    if ($src -ne ".") { Pop-Location }
 }
 
 # Import utils
@@ -136,10 +138,14 @@ try {
         try {
             $mainver = Bump-Version -asmfile:$asmfile -major:$major -minor:$minor -patch:$patch -hotfix:$hotfix -dryrun:$dryrun
             if (-not $dryrun) {
-                git add Assets\Scripts\AssemblyInfo.cs
+                if ($src -ne ".") { Push-Location $src }
+
+                git add "$($config.AssemblyInfo)"
                 if ($LASTEXITCODE -ne 0) { Exit $LASTEXITCODE }
                 git commit -m "Version bump"
                 if ($LASTEXITCODE -ne 0) { Exit $LASTEXITCODE }
+
+                if ($src -ne ".") { Pop-Location }
             }
         }
         catch {
@@ -156,8 +162,10 @@ try {
         $forcearg = "-f"
     }
     if (-not $test -and -not $dryrun) {
+        if ($src -ne ".") { Push-Location $src }
         git tag $forcearg -a $mainver -m "Automated release tag"
         if ($LASTEXITCODE -ne 0) { Exit $LASTEXITCODE }
+        if ($src -ne ".") { Pop-Location }
     }
 
     # Determine the types of build to make
