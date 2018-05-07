@@ -1,0 +1,27 @@
+{
+    "BuildDir": "/Path/To/Build/Folder",
+    "ReleaseDir": "/Path/To/Zipped/Releases/Folder",
+
+    "Targets": [
+        "Mac64",
+        "Win32"
+    ],
+
+    "AssemblyInfo": "Assets/Scripts/AssemblyInfo.cs",
+
+    "ItchAppId": "user/app-name",
+    "ItchChannelByTarget": {
+        "Mac64": "osx-universal",
+        "Win32": "windows"
+    },
+
+
+    "SteamAppId": "YourSteamAppId",
+    "SteamDepotsByTarget": {
+        "Mac64": "YourMacDepotId",
+        "Win32": "YourWindowsDepotId"
+    },
+    "SteamLogin": "YourSteamReleaseUser"
+}
+
+

@@ -1,0 +1,212 @@
+# Defaults to building a patch release, which increments the 3rd build number
+[CmdletBinding()] # Fail on unknown args
+param (
+    [string]$src,
+    [switch]$major = $false,
+    [switch]$minor = $false,
+    [switch]$patch = $false,
+    [switch]$hotfix = $false,
+    # -keepversion means version number stays the same but tag is moved (if not -test, requires -force)
+    [switch]$keepversion = $false,
+    # Ignore production warnings
+    [switch]$force = $false,
+    # Build for development only, not production
+    [switch]$devonly = $false,
+    # Build for production only, not production
+    [switch]$prodonly = $false,
+    # Skip build for Steam (included by default)
+    [switch]$skipsteam = $false,
+    # Testing mode; skips clean checks, tags, puts output in builddir
+    [switch]$test = $false,
+    # Dry-run; does nothing but report what *would* have happened
+    [switch]$dryrun = $false,
+    [switch]$help = $false
+)
+
+function Print-Usage {
+    Write-Output "Old Doorways Unity Build Tool"
+    Write-Output "Usage:"
+    Write-Output "  build.ps1 [-src:sourcefolder] [-major|-minor|-patch|-hotfix] [-keepversion] [-force] [-devonly] [-prodonly] [-skipsteam] [-test] [-dryrun]"
+    Write-Output " "
+    Write-Output "  -src         : Source folder (current folder if omitted), must contain buildconfig.json"
+    Write-Output "  -major       : Increment major version i.e. [x++].0.0.0"
+    Write-Output "  -minor       : Increment minor version i.e. x.[x++].0.0"
+    Write-Output "  -patch       : Increment patch version i.e. x.x.[x++].0"
+    Write-Output "  -hotfix      : Increment hotfix version i.e. x.x.x.[x++]"
+    Write-Output "               : (-patch is assumed if none are supplied)"
+    Write-Output "  -keepversion : Keep current version number"
+    Write-Output "  -force       : Move version tag"
+    Write-Output "  -devonly     : Build development version only (builds both otherwise)"
+    Write-Output "  -prodonly    : Build production version only (builds both otherwise)"
+    Write-Output "  -skipsteam   : Skip the Steam build"
+    Write-Output "  -test        : Testing mode, don't fail on dirty working copy etc"
+    Write-Output "  -dryrun      : Don't perform any actual actions, just report on what you would do"
+    Write-Output "  -help        : Print this help"
+}
+
+# Import config
+. $PSScriptRoot\inc\buildconfig.ps1
+$config = Load-Build-Config -srcfolder:$src
+
+$ErrorActionPreference = "Stop"
+
+if ($help) {
+    Print-Usage
+    Exit 0
+}
+
+# Override release dir if test mode
+if ($test) {
+    Write-Output "TEST MODE: Output archives will be in $($config.BuildDir)"
+    $config.ReleaseDir = $config.BuildDir
+}
+
+
+if (([bool]$major + [bool]$minor + [bool]$patch + [bool]$hotfix) -gt 1) {
+    Write-Output "ERROR: Can't set more than one of major/minor/patch/hotfix at the same time!"
+    Print-Usage
+    Exit 5
+}
+if (($major -or $minor -or $patch -or $hotfix) -and $keepversion) {
+    Write-Output  "ERROR: Can't set keepversion at the same time as major/minor/patch/hotfix!"
+    Print-Usage
+    Exit 5
+}
+if ($devonly -and $prodonly) {
+    Write-Output  "ERROR: Cannot set both -devonly or -prodonly"
+    Print-Usage
+    Exit 5
+}
+
+if ($keepversion -and -not $devonly -and -not $force -and -not $test) {
+    Write-Output "Keeping the current version for production will not update properly for users!"
+    Write-Output "Aborting; you can override with -force but BE SURE YOU HAVEN'T RELEASED"
+    Exit 5
+}
+
+# Check working copy is clean
+if (-not $test) {
+    git diff --no-patch --exit-code
+    if ($LASTEXITCODE -ne 0) {
+        Write-Output "Working copy is not clean (unstaged changes)"
+        if ($dryrun) {
+            Write-Output "dryrun: Continuing but this will fail without -dryrun"
+        } else {
+            Exit $LASTEXITCODE
+        }
+    }
+    git diff --no-patch --cached --exit-code
+    if ($LASTEXITCODE -ne 0) {
+        Write-Output "Working copy is not clean (staged changes)"
+        if ($dryrun) {
+            Write-Output "dryrun: Continuing but this will fail without -dryrun"
+        } else {
+            Exit $LASTEXITCODE
+        }
+    }
+}
+
+# Import utils
+. $PSScriptRoot\inc\pathutils.ps1
+. $PSScriptRoot\inc\bumpversion.ps1
+. $PSScriptRoot\inc\buildtarget.ps1
+. $PSScriptRoot\inc\zip.ps1
+
+# Don't need the serial if not using advanced features
+# if ([string]::IsNullOrEmpty($Env:UNITY_SERIAL)) {
+#     Write-Output "You must set the UNITY_SERIAL environment variable"
+#     Exit 3
+# }
+
+try {
+    if (([bool]$major + [bool]$minor + [bool]$patch + [bool]$hotfix) -eq 0) {
+        $patch = $true
+    }
+    $mainver = $null
+    $asmfile = Resolve-Path "$src\$($config.AssemblyInfo)"
+    if ($keepversion) {
+        $mainver = GetVersion -asmfile:$asmfile
+    } else {
+        # Bump up version, passthrough options
+        try {
+            $mainver = Bump-Version -asmfile:$asmfile -major:$major -minor:$minor -patch:$patch -hotfix:$hotfix -dryrun:$dryrun
+            if (-not $dryrun) {
+                git add Assets\Scripts\AssemblyInfo.cs
+                if ($LASTEXITCODE -ne 0) { Exit $LASTEXITCODE }
+                git commit -m "Version bump"
+                if ($LASTEXITCODE -ne 0) { Exit $LASTEXITCODE }
+            }
+        }
+        catch {
+            Write-Output $_.Exception.Message
+            Exit 6
+        }
+    }
+    Write-Output "Next version will be: $mainver"
+
+    # For tagging release
+    # We only need to grab the main version once
+    $forcearg = ""
+    if ($keepversion) {
+        $forcearg = "-f"
+    }
+    if (-not $test -and -not $dryrun) {
+        git tag $forcearg -a $mainver -m "Automated release tag"
+        if ($LASTEXITCODE -ne 0) { Exit $LASTEXITCODE }
+    }
+
+    # Determine the types of build to make
+    class Build {
+        [bool]$development
+        [bool]$steam
+    }
+    $builds = New-Object System.Collections.ArrayList
+
+    if (-not $prodonly) {
+        $builds.Add([Build]@{
+            development=$false
+            steam=$false
+        }) > $null
+        if (-not $skipsteam) {
+            $builds.Add([Build]@{
+                development=$false
+                steam=$true
+            }) > $null
+        }
+    }
+    if (-not $devonly) {
+        $builds.Add([Build]@{
+            development=$true
+            steam=$false
+        }) > $null
+        # We never send dev builds to Steam
+    }
+
+    foreach ($bld in $builds) {
+
+        Build-Targets -src:$src -config:$config -version:$mainver -targets:$config.Targets -steam:$bld.steam -development:$bld.development -dryrun:$dryrun
+
+        # Zip up direct/general resources
+        if ($bld.steam -eq $false) {
+            $devsuffix = if ($bld.development) { "-dev" } else { "" }
+            foreach ($target in $config.Targets) {
+                $dest = "$($config.ReleaseDir)\WashedUp-$mainver-$target$devsuffix.zip"
+                $targetdir = Get-Build-Full-Path -config:$config -version:$mainver -target:$target -steam:$bld.steam -development:$bld.development
+
+                # Compress
+                if (-not $dryrun) {
+                    Write-Output "Zipping to $dest..."
+                    Zip-Release -sourceDir:"$targetdir" -destFile:$dest
+                } else {
+                    Write-Output "dryrun: Would zip $targetdir to $dest"
+                }
+            }
+        }
+    }
+
+
+}
+catch {
+    Write-Output $_.Exception.Message
+    Exit 9
+}
