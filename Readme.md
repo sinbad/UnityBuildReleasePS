@@ -136,11 +136,8 @@ Only the non-development builds are considered for release to Itch.io and Steam.
 ### Steam is its own build config
 
 There are 2 build variants of each target, "steam" and "general". The "steam"
-variant is built with `#define STEAM_BUILD`, and the "general" variant is
-built with `#define DISABLESTEAMWORKS`. This is just convenient for my builds
-which enable Steam functionality only when `STEAM_BUILD` is defined, and since
-I use Steamworks.Net, defining `DISABLESTEAMWORKS` excludes that from the codebase
-in other cases.
+variant is built with the defines set in **DefinesSteam**, and the "general" variant is
+built with the defines set in **DefinesNonSteam**.
 
 The "general" build variant is used for internal testing (and has a -dev variant)
 and Itch.io.
