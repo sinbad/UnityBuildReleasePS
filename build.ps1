@@ -23,6 +23,18 @@ param (
     [switch]$help = $false
 )
 
+# Import utils
+# For some reason we have to import powershell-yaml here and not in inc\yamlutil.ps1
+# Doing the latter modifies the $PSScriptRoot to the inc\ subfolder & messes everything up
+# on the first run only
+# I have no idea if this is a bug in the module or expected behaviour
+Import-Module powershell-yaml
+. $PSScriptRoot\inc\buildtarget.ps1
+. $PSScriptRoot\inc\buildconfig.ps1
+. $PSScriptRoot\inc\pathutils.ps1
+. $PSScriptRoot\inc\bumpversion.ps1
+. $PSScriptRoot\inc\zip.ps1
+
 function Print-Usage {
     Write-Output "Old Doorways Unity Build Tool"
     Write-Output "Usage:"
@@ -50,7 +62,6 @@ if ($src.Length -eq 0) {
 }
 
 # Import config
-. $PSScriptRoot\inc\buildconfig.ps1
 $config = Load-Build-Config -srcfolder:$src
 
 $ErrorActionPreference = "Stop"
@@ -112,12 +123,6 @@ if (-not $test) {
     }
     if ($src -ne ".") { Pop-Location }
 }
-
-# Import utils
-. $PSScriptRoot\inc\pathutils.ps1
-. $PSScriptRoot\inc\bumpversion.ps1
-. $PSScriptRoot\inc\buildtarget.ps1
-. $PSScriptRoot\inc\zip.ps1
 
 # Don't need the serial if not using advanced features
 # if ([string]::IsNullOrEmpty($Env:UNITY_SERIAL)) {

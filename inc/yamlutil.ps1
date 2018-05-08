@@ -1,6 +1,3 @@
-# depends on powershell-yaml
-Import-Module powershell-yaml
-
 function Yaml-Load {
 
     param (

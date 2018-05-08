@@ -1,4 +1,4 @@
-. "$PSScriptRoot\yamlutil.ps1"
+. $PSScriptRoot\yamlutil.ps1
 
 # Builds specified targets (Win32, Mac64 etc) with deploy/dev switches
 function Build-Targets {
