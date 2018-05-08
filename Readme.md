@@ -90,11 +90,69 @@ is as follows:
 * **Targets**: Array of strings of targets to build. These must match the enum names of [`MultiBuild.Target`](https://github.com/sinbad/UnityMultiBuild/blob/866b2bb2d2d816e6244b7df5f33335df425f1802/Assets/MultiBuild/Editor/Settings.cs#L9), e.g. "Mac64"
 * **AssemblyInfo**: Path to the AssemblyInfo.cs file containing the version number.
   This will be updated when bumping the version number
+* **DefinesAlways**: Set global `#define`s which is applied to all builds (semicolon separated)
+* **DefinesDevMode**:  Additional global `#define`s when building in Development mode
+* **DefinesNonDevMode**: Addition global `#define`s when building in non-Development mode
+* **DefinesSteam**:  Additional global `#define`s when building for Steam
+* **DefinesNonSteam**: Addition global `#define`s when building for Itch or general use
 * **ItchAppId**: The id of your application at [Itch.io](https://itch.io) if you're releasing there
 * **ItchChannelByTarget**: Dictionary mapping the target names specified previously to Itch.io channel names
 * **SteamAppId**: The ID of your app on Steam if you're releasing there
 * **SteamDepotsByTarget**: A dictionary mapping target names to Depot IDs in Steam.
   Currently only 1 depot per target is supported (1 per platform)
 * **SteamLogin**: The login name you'll use to upload to Steam
+
+## Current Assumptions
+
+I built this tool for myself so it's not entirely general purpose. It contains
+some useful functionality you could probably adapt to work a bit differently if
+you wanted. Here are the major assumptions:
+
+### Global preprocessor defines (IMPORTANT)
+
+To globally set `#define` entries which apply across all files in Unity, these
+scripts replace the `scriptingDefineSymbols` setting in
+`.\ProjectSettings\ProjectSettings.asset`. You can set what these definitions will
+be using the `Defines*` settings listed above.
+
+However it does mean that if you've already set the Scripting Define Symbols
+yourself in the Unity editor, you need to migrate those settings to the `Define*`
+settings in `buildconfig.json`, because they will be replaced. It's simply
+easier to compeltely replace these settings than to try to merge them with Editor
+changes, since you might have just been experimenting ad-hoc in the editor.
+
+### Production and development builds
+
+This tool will by default built a version of the game in Unity's "development mode"
+and a version without this set. We have various debug options enabled in development
+builds in our game (replay functionality, triggering events manually etc) which
+are excluded in production mode. You can choose to build one or other variant
+with the `-prodonly` and `-devonly` options to `build.ps1`
+
+Only the non-development builds are considered for release to Itch.io and Steam.
+
+### Steam is its own build config
+
+There are 2 build variants of each target, "steam" and "general". The "steam"
+variant is built with `#define STEAM_BUILD`, and the "general" variant is
+built with `#define DISABLESTEAMWORKS`. This is just convenient for my builds
+which enable Steam functionality only when `STEAM_BUILD` is defined, and since
+I use Steamworks.Net, defining `DISABLESTEAMWORKS` excludes that from the codebase
+in other cases.
+
+The "general" build variant is used for internal testing (and has a -dev variant)
+and Itch.io.
+
+### Zipped local builds
+
+After building, the "general" variants (including development mode) are zipped
+up and placed in a version-named file (with a `-dev` suffix for development mode)
+in the **ReleaseDir** you set in your `buildconfig.json`.
+
+These are just handy for internal testing, particularly the `-dev` variants.
+
+
+
+
 
 

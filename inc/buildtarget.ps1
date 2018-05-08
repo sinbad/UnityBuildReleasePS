@@ -1,5 +1,20 @@
 . $PSScriptRoot\yamlutil.ps1
 
+function Append-Defines {
+    param (
+        [string]$defines,
+        [string]$addDefines
+    )
+
+    if ($addDefines.Length -eq 0) {
+        return $defines
+    } elseif ($defines.Length -eq 0) {
+        return $addDefines
+    } else {
+        return "$defines;$addDefines"
+    }
+}
+
 # Builds specified targets (Win32, Mac64 etc) with deploy/dev switches
 function Build-Targets {
 
@@ -29,10 +44,17 @@ function Build-Targets {
         }
     }
 
-    if ($steam) {
-        $defines = "ENABLE_UBERLOGGING_ERRORS;STEAM_BUILD"
+    $defines = $config.DefinesAlways
+
+    if ($development) {
+        $defines = Append-Defines $defines $config.DefinesDevMode
     } else {
-        $defines = "ENABLE_UBERLOGGING_ERRORS;DISABLESTEAMWORKS"
+        $defines = Append-Defines $defines $config.DefinesNonDevMode
+    }
+    if ($steam) {
+        $defines = Append-Defines $defines $config.DefinesSteam
+    } else {
+        $defines = Append-Defines $defines $config.DefinesNonSteam
     }
 
 

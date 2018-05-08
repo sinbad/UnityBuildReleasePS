@@ -11,6 +11,12 @@
 
     "AssemblyInfo": "Assets/Scripts/AssemblyInfo.cs",
 
+    "DefinesAlways": "ANY_GLOBAL_DEFINES;THAT_SHOULD;BE_SET_FOR;ALL_BUILDS",
+    "DefinesDevMode": "EXTRA_DEFINES_DEV_MODE",
+    "DefinesNonDevMode": "EXTRA_DEFINES_PROD_MODE",
+    "DefinesSteam": "EXTRA_DEFINES;STEAM_BUILD",
+    "DefinesNonSteam": "EXTRA_DEFINES_NON_STEAM_BUILD",
+
     "ItchAppId": "user/app-name",
     "ItchChannelByTarget": {
         "Mac64": "osx-universal",

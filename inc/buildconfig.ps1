@@ -13,6 +13,16 @@ class BuildConfig {
     [array]$Targets
     # Location of AssemblyInfo.cs containing version number, relative to source folder
     [string]$AssemblyInfo
+    # Global defines which are always included
+    [string]$DefinesAlways
+    # Global defines which are only included in development builds
+    [string]$DefinesDevMode
+    # Global defines which are only included in non-development builds
+    [string]$DefinesNonDevMode
+    # Global defines which are only included in Steam builds
+    [string]$DefinesSteam
+    # Global defines which are only included in non-Steam builds
+    [string]$DefinesNonSteam
 
     # Itch config, only needed if releasing to Itch
     # Itch app id, of the form "owner/appname"
@@ -61,6 +71,11 @@ function Load-Build-Config {
     }
     $ret.Targets = $obj.Targets
     $ret.AssemblyInfo = $obj.AssemblyInfo
+    $ret.DefinesAlways = $obj.DefinesAlways
+    $ret.DefinesDevMode = $obj.DefinesDevMode
+    $ret.DefinesNonDevMode = $obj.DefinesNonDevMode
+    $ret.DefinesSteam = $obj.DefinesSteam
+    $ret.DefinesNonSteam = $obj.DefinesNonSteam
     $ret.ItchAppId = $obj.ItchAppId
     # Have to convert from PSCustomObject to hashtable
     $ret.ItchChannelByTarget = @{}
