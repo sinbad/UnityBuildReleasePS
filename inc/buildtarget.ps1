@@ -74,7 +74,8 @@ function Build-Targets {
     $func = "MultiBuild.Builder.BuildCommandLine"
 
     $isdev = if ($development) { "true" } else { "false" }
-    $cmdargs = "-projectPath `"$src`" -quit -batchmode -executeMethod $func `"$basedir`" $isdev $($targets -join `" `")"
+    $projargs = if ($src -ne ".") { "-projectPath `"$src`"" } else { "" }
+    $cmdargs = "$projargs -quit -batchmode -executeMethod $func `"$basedir`" $isdev $($targets -join `" `")"
 
     mkdir "$basedir" -ErrorAction SilentlyContinue > $null
 
