@@ -62,8 +62,9 @@ Usage:
 2. [Multibuild](https://github.com/sinbad/UnityMultiBuild) installed - this tool
    uses its batch mode for simplicity
 3. Powershell v5.1+ installed
-4. Steamworks SDK installed if you're releasing to Steam
-5. Itch.io's `butler` tool installed if you're releasing to Itch
+4. `powershell-yaml` installed (`Install-Module powershell-yaml`)
+5. Steamworks SDK installed if you're releasing to Steam
+6. Itch.io's `butler` tool installed if you're releasing to Itch
 
 ## How to use
 
