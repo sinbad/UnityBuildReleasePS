@@ -90,7 +90,7 @@ is as follows:
 * **Targets**: Array of strings of targets to build. These must match the enum names of [`MultiBuild.Target`](https://github.com/sinbad/UnityMultiBuild/blob/866b2bb2d2d816e6244b7df5f33335df425f1802/Assets/MultiBuild/Editor/Settings.cs#L9), e.g. "Mac64"
 * **AssemblyInfo**: Path to the AssemblyInfo.cs file containing the version number.
   This will be updated when bumping the version number
-* **DefinesAlways**: Set global `#define`s which is applied to all builds (semicolon separated)
+* **DefinesAlways**: Set global `#define`s applied to all builds (semicolon separated)
 * **DefinesDevMode**:  Additional global `#define`s when building in Development mode
 * **DefinesNonDevMode**: Addition global `#define`s when building in non-Development mode
 * **DefinesSteam**:  Additional global `#define`s when building for Steam
@@ -116,10 +116,11 @@ scripts replace the `scriptingDefineSymbols` setting in
 be using the `Defines*` settings listed above.
 
 However it does mean that if you've already set the Scripting Define Symbols
-yourself in the Unity editor, you need to migrate those settings to the `Define*`
-settings in `buildconfig.json`, because they will be replaced. It's simply
-easier to compeltely replace these settings than to try to merge them with Editor
-changes, since you might have just been experimenting ad-hoc in the editor.
+yourself in the Unity editor, you need to migrate those settings to the
+`Define*` settings in `buildconfig.json`, because they will be replaced during
+the build (although reverted afterwards). It's simply easier to completely
+replace these settings than to try to merge them with Editor changes, since you
+might have just been experimenting ad-hoc in the editor.
 
 ### Production and development builds
 
