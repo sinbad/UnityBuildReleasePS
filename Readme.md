@@ -73,7 +73,8 @@ Usage:
    your project assets
 3. Place a file called `buildconfig.json` in your Unity project root, see `buildconfig_template.json`, see below for more discussion
 4. Run `build.ps1` or `release.ps1` as above, use `-help` to get assistance
-  * You can either run them from your Unity project root (run `\path\to\build.ps1`), or from their own directory and specify the Unity project path with `-src:\path\to\unity\project`
+    * Ideally, add the folder containing `build.ps1` to your `PATH` and run from inside your Unity project root folder
+    * Alternatively, pass `-src:\path\to\unity\project` to both scripts to run from anywhere
 
 
 ## Build Config

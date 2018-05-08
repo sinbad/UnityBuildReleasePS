@@ -1,10 +1,11 @@
 [CmdletBinding()] # Fail on unknown args
 param (
-    [string]$src,
     # Version to release
     [string]$version,
     # Which service to release on: provide "steam" or "itch"
     [string]$service,
+    # Unity source folder (assumes current dir if not specified)
+    [string]$src,
     # Whether to release Windows build (default yes)
     [bool]$windows = $true,
     # Whether to release Mac build (default yes)
@@ -14,6 +15,7 @@ param (
     [switch]$help = $false
 )
 
+. $PSScriptRoot\inc\buildconfig.ps1
 . $PSScriptRoot\inc\release_steam.ps1
 . $PSScriptRoot\inc\release_itch.ps1
 
@@ -44,7 +46,6 @@ if ($src.Length -eq 0) {
 }
 
 # Import config
-. $PSScriptRoot\inc\buildconfig.ps1
 $config = Load-Build-Config -srcfolder:$src
 
 if ($version.Length -eq 0) {
