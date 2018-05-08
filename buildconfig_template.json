@@ -1,4 +1,6 @@
 {
+    "UnityExe": "C:\\Program Files\\Unity\\Editor\\Unity.exe",
+
     "BuildDir": "/Path/To/Build/Folder",
     "ReleaseDir": "/Path/To/Zipped/Releases/Folder",
 

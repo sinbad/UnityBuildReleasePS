@@ -1,5 +1,7 @@
 # Our config for both building and releasing
 class BuildConfig {
+    # The location of the Unity exe, defaults to C:\Program Files\Unity\Editor\Unity.exe
+    [string]$UnityExe
     # The root of the folder structure which will contain build output
     # Will be structured $BuildDir/$version/[general|steam]/$target
     # If relative, will be considered relative to source folder
@@ -41,6 +43,11 @@ function Load-Build-Config {
     $obj = (Get-Content $configfile) | ConvertFrom-Json
 
     $ret = [BuildConfig]::New()
+    if ($obj.UnityExe.Length -eq 0) {
+        $ret.UnityExe = "C:\Program Files\Unity\Editor\Unity.exe"
+    } else {
+        $ret.UnityExe = $obj.UnityExe
+    }
     if ([System.IO.Path]::IsPathRooted($obj.BuildDir)) {
         $ret.BuildDir = Resolve-Path $obj.BuildDir
     } else {

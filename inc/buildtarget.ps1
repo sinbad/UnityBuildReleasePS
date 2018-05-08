@@ -54,9 +54,6 @@ function Build-Targets {
         Write-Output "dryrun: Would set #defines to $defines"
     }
 
-    # Unity location
-    $unity = 'C:\Program Files\Unity\Editor\Unity.exe'
-
     if (-not $dryrun) {
         # Check if Unity is running, if so try to shut it gracefully
         $unityproc = Get-Process Unity -ErrorAction SilentlyContinue
@@ -86,7 +83,7 @@ function Build-Targets {
             Remove-Item "$dir" -Recurse -Force -ErrorAction SilentlyContinue
         }
 
-        $process = (Start-Process $unity -ArgumentList $cmdargs -PassThru -Wait)
+        $process = (Start-Process $config.UnityExe -ArgumentList $cmdargs -PassThru -Wait)
         if ($process.ExitCode -ne 0) {
             $code = $process.ExitCode
             throw "*** Unity exited with code $code, see above"

@@ -82,6 +82,7 @@ The build config file is just a JSON file telling the tools how to behave. There
 is a template in `buildconfig_template.json`, and the meaning of the properties
 is as follows:
 
+* **UnityExe**: Path to Unity.exe, defaults to "C:\Program Files\Unity\Editor\Unity.exe"
 * **BuildDir**: Path to the location in which build output will be produced.
   It can be relative, in which case it is relative to the Unity project folder.
   * Subdirectories will be created while building, of the form {BuildDir}/{version}/{general|steam}/{target}/
