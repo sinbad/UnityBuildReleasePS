@@ -38,6 +38,13 @@ Usage:
   -help        : Print this help
 ```
 
+If the script is on your `PATH` and you're running from inside your Unity folder
+you can omit the source parameter for a more streamlined command such as:
+
+```
+build.ps1 -minor
+```
+
 ## Release tool
 
 The **release** tool automates uploading builds to Steam and Itch.io:
@@ -45,15 +52,22 @@ The **release** tool automates uploading builds to Steam and Itch.io:
 ```
 Old Doorways Release Tool
 Usage:
-  release.ps1 [-src:sourcefolder] -version:ver -service:svc [-windows:bool] [-mac:bool] [-dryrun]
+  release.ps1 -version:ver -service:svc [-src:sourcefolder] [-windows:bool] [-mac:bool] [-dryrun]
 
-  -src         : Source folder (current folder if omitted), must contain buildconfig.json
   -version:ver : Version to release
   -service:svc : 'steam' or 'itch'
+  -src         : Source folder (current folder if omitted), must contain buildconfig.json
   -windows:b   : Whether to release for Windows (default true)
   -mac:b       : Whether to release for Mac (default true)
   -dryrun      : Don't perform any actual actions, just report what would happen
   -help        : Print this help
+```
+
+If the script is on your `PATH` and you're running from inside your Unity folder
+you can omit the parameter names for a more streamlined command such as:
+
+```
+release.ps1 1.2.3.0 steam
 ```
 
 ## Requirements
@@ -130,6 +144,9 @@ and a version without this set. We have various debug options enabled in develop
 builds in our game (replay functionality, triggering events manually etc) which
 are excluded in production mode. You can choose to build one or other variant
 with the `-prodonly` and `-devonly` options to `build.ps1`
+
+There are preprocessor define variants you can add for dev/non-dev builds via
+the **DefinesDevMode** and **DefinesNonDevMode** settings.
 
 Only the non-development builds are considered for release to Itch.io and Steam.
 

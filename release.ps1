@@ -22,11 +22,11 @@ param (
 function Print-Usage {
     Write-Output "Old Doorways Release Tool"
     Write-Output "Usage:"
-    Write-Output "  release.ps1 [-src:sourcefolder] -version:ver -service:svc [-windows:bool] [-mac:bool] [-dryrun]"
+    Write-Output "  release.ps1 -version:ver -service:svc [-src:sourcefolder] [-windows:bool] [-mac:bool] [-dryrun]"
     Write-Output " "
-    Write-Output "  -src         : Source folder (current folder if omitted), must contain buildconfig.json"
     Write-Output "  -version:ver : Version to release"
     Write-Output "  -service:svc : 'steam' or 'itch'"
+    Write-Output "  -src         : Source folder (current folder if omitted), must contain buildconfig.json"
     Write-Output "  -windows:b   : Whether to release for Windows (default true)"
     Write-Output "  -mac:b       : Whether to release for Mac (default true)"
     Write-Output "  -dryrun      : Don't perform any actual actions, just report what would happen"
