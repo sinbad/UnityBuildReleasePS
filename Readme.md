@@ -70,6 +70,15 @@ you can omit the parameter names for a more streamlined command such as:
 release.ps1 1.2.3.0 steam
 ```
 
+When releasing to Itch.io, the tool uses the `butler push` command and maps
+the platform targets to Itch channels using **ItchChannelByTarget** in `buildconfig.json`
+(see below).
+
+When releasing to Steam, the tool generates the VPS files needed by the `steamcmd`
+tool for your application and its depots. They're actually written to the
+steam subfolder of the build folder structure even when `-dryrun` is specified
+so you can examine them if you want.
+
 ## Requirements
 
 1. Unity project using 2017.3 or newer
