@@ -142,6 +142,17 @@ built with the defines set in **DefinesNonSteam**.
 The "general" build variant is used for internal testing (and has a -dev variant)
 and Itch.io.
 
+### Steam depots are 1:1 with targets
+
+Right now each target (e.g. Mac64, Win32) only has a single Steam Depot ID
+associated with it. This is probably too limiting for larger projects but it
+was all I needed right now. PRs welcome!
+
+Probably the **SteamDepotsByTarget** setting should be a hashtable to array of
+Depot IDs instead, and the release script should write a file for each unique
+Depot ID across all targets. However since I don't have a real-world use of this
+yet I haven't attempted to do that.
+
 ### Zipped local builds
 
 After building, the "general" variants (including development mode) are zipped
