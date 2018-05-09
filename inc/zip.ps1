@@ -10,15 +10,10 @@ function Zip-Release {
     # default Powershell can't access this, PITA. Let's just use the 7z command
 
     $tempdest =  [System.IO.Path]::GetTempPath() + [System.IO.Path]::GetRandomFileName() + ".zip"
-    $zip = get-command 7z
     $zipargs = "a `"$tempdest`" $sourcedir\*"
 
     try {
-        $process = (Start-Process $zip -ArgumentList $zipargs)
-        if ($process.ExitCode -ne 0) {
-            $code = $process.ExitCode
-            throw "Failed to compress, 7z exited with code $code, see above"
-        }
+        7z a "$tempdest" "$sourcedir\*"
     }
     catch {
         Remove-Item $tempdest -Force
