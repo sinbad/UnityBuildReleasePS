@@ -86,8 +86,11 @@ so you can examine them if you want.
    uses its batch mode for simplicity
 3. Powershell v5.1+ installed
 4. `powershell-yaml` installed (`Install-Module powershell-yaml`)
-5. Steamworks SDK installed if you're releasing to Steam
-6. Itch.io's `butler` tool installed if you're releasing to Itch
+5. [7zip](https://www.7-zip.org/) command line tool on your path
+   (we don't use .Net System.io.Compression because it breaks path separators
+   on Mac before CLR 4.6.1)
+6. Steamworks SDK installed if you're releasing to Steam
+7. Itch.io's `butler` tool installed if you're releasing to Itch
 
 ## How to use
 
