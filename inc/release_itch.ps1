@@ -33,10 +33,11 @@ function Release-Itch {
             Write-Output "dryrun: Would have run butler command:"
             Write-Output "  butler push --userversion=$version '$sourcefolder' $($config.ItchAppId):$channel"
         } else {
-            Write-Output "Releasing version $version to Itch.io at $($config.ItchAppId):$channel"
+            $target = "$($config.ItchAppId):$channel"
+            Write-Output "Releasing version $version to Itch.io at $target"
             Write-Output " Source: $sourcefolder"
 
-            butler push --userversion=$version "$sourcefolder" $($config.ItchAppId)S:$channel
+            butler push --userversion=$version "$sourcefolder" $target
             Write-Output "Itch.io Release Done!"
         }
     }
