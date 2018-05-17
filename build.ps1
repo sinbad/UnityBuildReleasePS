@@ -180,7 +180,7 @@ try {
     }
     $builds = New-Object System.Collections.ArrayList
 
-    if (-not $prodonly) {
+    if (-not $devonly) {
         $builds.Add([Build]@{
             development=$false
             steam=$false
@@ -192,7 +192,7 @@ try {
             }) > $null
         }
     }
-    if (-not $devonly) {
+    if (-not $prodonly) {
         $builds.Add([Build]@{
             development=$true
             steam=$false
