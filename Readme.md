@@ -122,6 +122,10 @@ is as follows:
 * **DefinesNonDevMode**: Addition global `#define`s when building in non-Development mode
 * **DefinesSteam**:  Additional global `#define`s when building for Steam
 * **DefinesNonSteam**: Addition global `#define`s when building for Itch or general use
+* **BuildSteam**: Whether to build for Steam (default true)
+* **BuildNonSteam**: Whether to build for Itch/general use (default true)
+* **BuildSteamDevMode**: Whether to build a development mode version of the Steam build (default false)
+* **BuildNonSteamDevMode**: Whether to build a development mode version of the Itch/general build (default true)
 * **ItchAppId**: The id of your application at [Itch.io](https://itch.io) if you're releasing there
 * **ItchChannelByTarget**: Dictionary mapping the target names specified previously to Itch.io channel names
 * **SteamAppId**: The ID of your app on Steam if you're releasing there
@@ -154,8 +158,11 @@ might have just been experimenting ad-hoc in the editor.
 This tool will by default built a version of the game in Unity's "development mode"
 and a version without this set. We have various debug options enabled in development
 builds in our game (replay functionality, triggering events manually etc) which
-are excluded in production mode. You can choose to build one or other variant
-with the `-prodonly` and `-devonly` options to `build.ps1`
+are excluded in production mode. The default of whether to include development
+builds for Steam and non-Steam builds is controlled in `buildconfig.json` settings
+**BuildSteamDevMode** and **BuildNonSteamDevMode**.
+You can also choose to build one or other variant with the `-prodonly` and `-devonly`
+options to `build.ps1`.
 
 There are preprocessor define variants you can add for dev/non-dev builds via
 the **DefinesDevMode** and **DefinesNonDevMode** settings.
@@ -168,8 +175,7 @@ There are 2 build variants of each target, "steam" and "general". The "steam"
 variant is built with the defines set in **DefinesSteam**, and the "general" variant is
 built with the defines set in **DefinesNonSteam**.
 
-The "general" build variant is used for internal testing (and has a -dev variant)
-and Itch.io.
+The "general" build variant is used for internal testing and Itch.io.
 
 ### Steam depots are 1:1 with targets
 

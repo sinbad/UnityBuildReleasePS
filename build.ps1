@@ -130,6 +130,10 @@ if (-not $test) {
 #     Exit 3
 # }
 
+Write-Output ""
+Write-Output "Build configuration:"
+Write-Output $config
+
 try {
     if (([bool]$major + [bool]$minor + [bool]$patch + [bool]$hotfix) -eq 0) {
         $patch = $true
@@ -181,11 +185,13 @@ try {
     $builds = New-Object System.Collections.ArrayList
 
     if (-not $devonly) {
-        $builds.Add([Build]@{
-            development=$false
-            steam=$false
-        }) > $null
-        if (-not $skipsteam) {
+        if ($config.BuildNonSteam) {
+            $builds.Add([Build]@{
+                development=$false
+                steam=$false
+            }) > $null
+        }
+        if ($config.BuildSteam -and -not $skipsteam) {
             $builds.Add([Build]@{
                 development=$false
                 steam=$true
@@ -193,23 +199,31 @@ try {
         }
     }
     if (-not $prodonly) {
-        $builds.Add([Build]@{
-            development=$true
-            steam=$false
-        }) > $null
-        # We never send dev builds to Steam
+        if ($config.BuildNonSteam -and $config.BuildNonSteamDevMode) {
+            $builds.Add([Build]@{
+                development=$true
+                steam=$false
+            }) > $null
+        }
+        if ($config.BuildSteam -and $config.BuildSteamDevMode) {
+            $builds.Add([Build]@{
+                development=$true
+                steam=$true
+            }) > $null
+        }
     }
 
     foreach ($bld in $builds) {
 
         Build-Targets -src:$src -config:$config -version:$mainver -targets:$config.Targets -steam:$bld.steam -development:$bld.development -dryrun:$dryrun
 
-        # Zip up direct/general resources
-        if ($bld.steam -eq $false) {
+        # Zip up direct/general resources or steam dev mode
+        if ($bld.steam -eq $false -or $bld.development) {
+            $steamsuffix = if ($bld.steam) { "-steam" } else { "" }
             $devsuffix = if ($bld.development) { "-dev" } else { "" }
             foreach ($target in $config.Targets) {
-                $dest = "$($config.ReleaseDir)\WashedUp-$mainver-$target$devsuffix.zip"
-                $targetdir = Get-Build-Full-Path -config:$config -version:$mainver -target:$target -steam:$bld.steam -development:$bld.development
+                $dest = "$($config.ReleaseDir)\WashedUp-$mainver-$target$steamsuffix$devsuffix.zip"
+                $targetdir = Get-Build-Full-Path -builddir:$config.BuildDir -version:$mainver -target:$target -steam:$bld.steam -development:$bld.development
 
                 # Compress
                 if (-not $dryrun) {

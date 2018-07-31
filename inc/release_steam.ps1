@@ -11,7 +11,7 @@ function Release-Steam {
     )
 
     # Root folder is where we'll write the scripts
-    $rootfolder = Get-Build-Base-Path -config:$config -version:$version -steam:$true -development:$false
+    $rootfolder = Get-Build-Base-Path -builddir:$config.BuildDir -version:$version -steam:$true -development:$false
     # Preview mode in Steam build just outputs logs so it's dryrun
     $preview = if($dryrun) { "1" } else { "0"}
 
@@ -49,7 +49,7 @@ function Release-Steam {
         }
 
         # Source folder is the actual source of data
-        $sourcefolder = Get-Build-Full-Path -config:$config -version:$version -target:$target -steam:$true -development:$false
+        $sourcefolder = Get-Build-Full-Path -builddir:$config.BuildDir -version:$version -target:$target -steam:$true -development:$false
 
         $depotid = $config.SteamDepotsByTarget[$target];
         # Build a single depot file

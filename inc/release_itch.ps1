@@ -18,7 +18,7 @@ function Release-Itch {
 
         $channel = $config.ItchChannelByTarget[$target]
 
-        $sourcefolder = Get-Build-Full-Path -config:$config -version:$version -target:$target -steam:$false -development:$false
+        $sourcefolder = Get-Build-Full-Path -builddir:$config.BuildDir -version:$version -target:$target -steam:$false -development:$false
 
         if (-not (Test-Path "$sourcefolder" -PathType Container)) {
             if ($dryrun) {

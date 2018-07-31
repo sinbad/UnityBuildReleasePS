@@ -17,6 +17,13 @@
     "DefinesSteam": "EXTRA_DEFINES;STEAM_BUILD",
     "DefinesNonSteam": "EXTRA_DEFINES_NON_STEAM_BUILD",
 
+    "BuildForSteam": true,
+    "BuildForNonSteam": true,
+
+    "BuildSteamDevMode": false,
+    "BuildNonSteamDevMode": true,
+
+
     "ItchAppId": "user/app-name",
     "ItchChannelByTarget": {
         "Mac64": "osx-universal",

@@ -28,7 +28,7 @@ function Build-Targets {
         [switch]$dryrun = $false
     )
 
-    $basedir = Get-Build-Base-Path -config:$config -version:$version -steam:$steam -development:$development
+    $basedir = Get-Build-Base-Path -builddir:$config.BuildDir -version:$version -steam:$steam -development:$development
     $deploydesc = if ($steam) { "Steam"} else { "General" }
     if ($development) {
         if ($dryrun) {
@@ -63,6 +63,7 @@ function Build-Targets {
         $projfile = "$src\ProjectSettings\ProjectSettings.asset"
         # YAML parser requires CRLF and ProjectSettings.asset is LF because crlf-auto doesn't match
         $settings = Yaml-Load $projfile -convertFromLF $true
+        $productName = $settings["PlayerSettings"]["productName"]
         # We can't use Yaml-Save to overwrite this since Unity uses its own YAML
         # headers and seems to hate it when things are re-encoded. Just use
         # this parsed version to efficiently swap in-place
@@ -101,7 +102,7 @@ function Build-Targets {
     if (-not $dryrun) {
         # Remove previous builds
         foreach ($target in $targets) {
-            $dir = Get-Build-Full-Path -config:$config -version:$version -target:$target -steam:$steam -development:$development
+            $dir = Get-Build-Full-Path -builddir:$config.BuildDir -version:$version -target:$target -steam:$steam -development:$development
             Remove-Item "$dir" -Recurse -Force -ErrorAction SilentlyContinue
         }
 
@@ -109,6 +110,14 @@ function Build-Targets {
         if ($process.ExitCode -ne 0) {
             $code = $process.ExitCode
             throw "*** Unity exited with code $code, see above"
+        }
+
+        # For dev-mode steam we need to package steam_appid.txt
+        if ($steam -and $development) {
+            foreach ($target in $targets) {
+                $dir = Get-Build-Full-Binary-Folder-Path -builddir:$config.BuildDir -productName:$productName -version:$version -target:$target -steam:$steam -development:$development
+                $config.SteamAppId | Out-File -FilePath "$dir\steam_appid.txt" -NoNewline
+            }
         }
 
         # Restore project settings

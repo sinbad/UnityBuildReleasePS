@@ -24,6 +24,16 @@ class BuildConfig {
     # Global defines which are only included in non-Steam builds
     [string]$DefinesNonSteam
 
+    # Whether to build for Steam
+    [bool]$BuildSteam = $true
+    # Whether to build non-Steam
+    [bool]$BuildNonSteam = $true
+
+    # Whether to build a dev variant of Steam build
+    [bool]$BuildSteamDevMode = $false
+    # Whether to build a dev variant of non-Steam build
+    [bool]$BuildNonSteamDevMode = $true
+
     # Itch config, only needed if releasing to Itch
     # Itch app id, of the form "owner/appname"
     [string]$ItchAppId
@@ -77,6 +87,11 @@ function Load-Build-Config {
     $ret.DefinesSteam = $obj.DefinesSteam
     $ret.DefinesNonSteam = $obj.DefinesNonSteam
     $ret.ItchAppId = $obj.ItchAppId
+    $ret.BuildSteamDevMode = $obj.BuildSteamDevMode
+    $ret.BuildNonSteamDevMode = $obj.BuildNonSteamDevMode
+    $ret.BuildSteam = $obj.BuildSteam
+    $ret.BuildNonSteam = $obj.BuildNonSteam
+
     # Have to convert from PSCustomObject to hashtable
     $ret.ItchChannelByTarget = @{}
     $obj.ItchChannelByTarget.psobject.properties | ForEach-Object { $ret.ItchChannelByTarget[$_.Name] = $_.Value  }
