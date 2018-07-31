@@ -116,7 +116,7 @@ function Build-Targets {
         if ($steam -and $development) {
             foreach ($target in $targets) {
                 $dir = Get-Build-Full-Binary-Folder-Path -builddir:$config.BuildDir -productName:$productName -version:$version -target:$target -steam:$steam -development:$development
-                $config.SteamAppId | Out-File -FilePath "$dir\steam_appid.txt" -NoNewline
+                $config.SteamAppId | Out-File -FilePath "$dir\steam_appid.txt" -NoNewline -Encoding ASCII
             }
         }
 
