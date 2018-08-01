@@ -115,7 +115,7 @@ function Build-Targets {
         # For dev-mode steam we need to package steam_appid.txt
         if ($steam -and $development) {
             foreach ($target in $targets) {
-                $dir = Get-Build-Full-Binary-Folder-Path -builddir:$config.BuildDir -productName:$productName -version:$version -target:$target -steam:$steam -development:$development
+                $dir = Get-Build-Full-Path -builddir:$config.BuildDir -version:$version -target:$target -steam:$steam -development:$development
                 $config.SteamAppId | Out-File -FilePath "$dir\steam_appid.txt" -NoNewline -Encoding ASCII
             }
         }
