@@ -162,6 +162,9 @@ try {
             Exit 6
         }
     }
+    if ($test) {
+        $mainver = "$mainver-test"
+    }
     Write-Output "Next version will be: $mainver"
 
     # For tagging release
