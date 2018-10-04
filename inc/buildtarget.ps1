@@ -77,20 +77,6 @@ function Build-Targets {
         Write-Output "dryrun: Would set #defines to $defines"
     }
 
-    if (-not $dryrun) {
-        # Check if Unity is running, if so try to shut it gracefully
-        $unityproc = Get-Process Unity -ErrorAction SilentlyContinue
-        if ($unityproc) {
-            Write-Output "Unity is currently running, trying to gracefully shut window "
-            $unityproc.CloseMainWindow()
-            Sleep 5
-            if (!$unityproc.HasExited) {
-                throw "Couldn't close Unity gracefully, aborting!"
-            }
-        }
-        Remove-Variable unityproc
-    }
-
     $func = "MultiBuild.Builder.BuildCommandLine"
 
     $isdev = if ($development) { "true" } else { "false" }
