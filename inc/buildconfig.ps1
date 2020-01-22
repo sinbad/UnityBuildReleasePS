@@ -94,10 +94,14 @@ function Load-Build-Config {
 
     # Have to convert from PSCustomObject to hashtable
     $ret.ItchChannelByTarget = @{}
-    $obj.ItchChannelByTarget.psobject.properties | ForEach-Object { $ret.ItchChannelByTarget[$_.Name] = $_.Value  }
+    if ($obj.ItchChannelByTarget) {
+        $obj.ItchChannelByTarget.psobject.properties | ForEach-Object { $ret.ItchChannelByTarget[$_.Name] = $_.Value  }
+    }
     $ret.SteamAppId = $obj.SteamAppId
     $ret.SteamDepotsByTarget = @{}
-    $obj.SteamDepotsByTarget.psobject.properties | ForEach-Object { $ret.SteamDepotsByTarget[$_.Name] = $_.Value  }
+    if ($obj.SteamDepotsByTarget) {
+        $obj.SteamDepotsByTarget.psobject.properties | ForEach-Object { $ret.SteamDepotsByTarget[$_.Name] = $_.Value  }
+    }
     $ret.SteamLogin = $obj.SteamLogin
 
     return $ret
