@@ -92,7 +92,13 @@ function Build-Targets {
             Remove-Item "$dir" -Recurse -Force -ErrorAction SilentlyContinue
         }
 
-        $process = (Start-Process $config.UnityExe -ArgumentList $cmdargs -PassThru -Wait)
+        $process = (Start-Process $config.UnityExe -ArgumentList $cmdargs -PassThru)
+        # Spinwait since -Wait doesn't seem to work?
+        do {
+            Write-Host "." -NoNewline
+            start-sleep -Milliseconds 1000
+        } until ($process.HasExited)
+
         if ($process.ExitCode -ne 0) {
             $code = $process.ExitCode
             throw "*** Unity exited with code $code, see above"
