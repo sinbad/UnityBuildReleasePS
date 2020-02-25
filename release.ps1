@@ -10,6 +10,8 @@ param (
     [bool]$windows = $true,
     # Whether to release Mac build (default yes)
     [bool]$mac = $true,
+    # Whether to release Linux build (default true)
+    [bool]$linux = $true,
     # Dry-run; does nothing but report what *would* have happened
     [switch]$dryrun = $false,
     [switch]$help = $false
@@ -29,6 +31,7 @@ function Print-Usage {
     Write-Output "  -src         : Source folder (current folder if omitted), must contain buildconfig.json"
     Write-Output "  -windows:b   : Whether to release for Windows (default true)"
     Write-Output "  -mac:b       : Whether to release for Mac (default true)"
+    Write-Output "  -linux:b     : Whether to release for Linux (default false)"
     Write-Output "  -dryrun      : Don't perform any actual actions, just report what would happen"
     Write-Output "  -help        : Print this help"
 }
@@ -62,9 +65,9 @@ if ($service -ne "steam" -and $service -ne "itch") {
 
 try {
     if ($service -eq "steam") {
-        Release-Steam -config:$config -version:$version -windows:$windows -mac:$mac -dryrun:$dryrun
+        Release-Steam -config:$config -version:$version -windows:$windows -mac:$mac -linux:$linux -dryrun:$dryrun
     } elseif ($service -eq "itch") {
-        Release-Itch -config:$config -version:$version -windows:$windows -mac:$mac -dryrun:$dryrun
+        Release-Itch -config:$config -version:$version -windows:$windows -mac:$mac -linux:$linux -dryrun:$dryrun
     }
 } catch {
     Write-Output $_.Exception.Message

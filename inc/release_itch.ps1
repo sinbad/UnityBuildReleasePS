@@ -6,6 +6,7 @@ function Release-Itch {
         [string]$version,
         [bool]$windows = $true,
         [bool]$mac = $true,
+        [bool]$linux = $true,
         [switch]$dryrun = $false
     )
 
@@ -13,6 +14,8 @@ function Release-Itch {
         if ($target -like '*Win*' -and -not $windows) {
             continue
         } elseif ($target -like '*Mac*' -and -not $mac) {
+            continue
+        } elseif ($target -like '*Linux*' -and -not $linux) {
             continue
         }
 
