@@ -52,13 +52,14 @@ The **release** tool automates uploading builds to Steam and Itch.io:
 ```
 Old Doorways Release Tool
 Usage:
-  release.ps1 -version:ver -service:svc [-src:sourcefolder] [-windows:bool] [-mac:bool] [-dryrun]
+  release.ps1 -version:ver -service:svc [-src:sourcefolder] [-windows:bool] [-mac:bool] [-linux:bool] [-dryrun]
 
   -version:ver : Version to release
   -service:svc : 'steam' or 'itch'
   -src         : Source folder (current folder if omitted), must contain buildconfig.json
-  -windows:b   : Whether to release for Windows (default true)
-  -mac:b       : Whether to release for Mac (default true)
+  -windows:b   : Whether to release for Windows (default true if in buildconfig)
+  -mac:b       : Whether to release for Mac (default true if in buildconfig)
+  -linux:b     : Whether to release for Linux (default true if in buildconfig)
   -dryrun      : Don't perform any actual actions, just report what would happen
   -help        : Print this help
 ```
