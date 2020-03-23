@@ -225,7 +225,7 @@ try {
                 steam=$false
             }) > $null
         }
-        if ($config.BuildSteam -and $config.BuildSteamDevMode) {
+        if ($config.BuildSteam -and $config.BuildSteamDevMode -and -not $skipsteam) {
             $builds.Add([Build]@{
                 development=$true
                 steam=$true
