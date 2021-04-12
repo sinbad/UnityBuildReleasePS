@@ -1,5 +1,7 @@
 # Unity Powershell Scripts for Batch Build & Release
 
+> #### Note: I have stopped using Unity and so am not maintaining this library any more.
+
 This is a set of Powershell scripts I wrote for our Unity game which allows us
 to build multiple configurations easily, and to release to Steam and Itch
 repeatably.
